@@ -1,0 +1,17 @@
+{
+  "name": "fb-server",
+  "version": "1.0.0",
+  "description": "this the server of client-fb",
+  "license": "ISC",
+  "author": "jakareya haldar",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
