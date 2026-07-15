@@ -1,17 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../utils/supabase';
 
 // Sample mock data matching MongoDB fields
-const MOCK_USERS = [
-  { id: '1', email: 'alex.jones@admin.com', phone: '+1 (555) 234-5678', code: 'USR-8842', createdAt: '2026-07-01T10:30:00.000Z' },
-  { id: '2', email: 'sarah.m@company.org', phone: '+1 (555) 987-6543', code: 'USR-1102', createdAt: '2026-07-03T14:15:22.000Z' },
-  { id: '3', email: 'david.k@techcorp.io', phone: '+44 20 7946 0192', code: 'USR-4931', createdAt: '2026-07-05T08:05:11.000Z' },
-  { id: '4', email: 'elena.rodriguez@domain.com', phone: '+34 91 363 5621', code: 'USR-7729', createdAt: '2026-07-08T19:42:00.000Z' },
-];
+// const MOCK_USERS = [
+//   { id: '1', email: 'alex.jones@admin.com', phone: '+1 (555) 234-5678', code: 'USR-8842', createdAt: '2026-07-01T10:30:00.000Z' },
+//   { id: '2', email: 'sarah.m@company.org', phone: '+1 (555) 987-6543', code: 'USR-1102', createdAt: '2026-07-03T14:15:22.000Z' },
+//   { id: '3', email: 'david.k@techcorp.io', phone: '+44 20 7946 0192', code: 'USR-4931', createdAt: '2026-07-05T08:05:11.000Z' },
+//   { id: '4', email: 'elena.rodriguez@domain.com', phone: '+34 91 363 5621', code: 'USR-7729', createdAt: '2026-07-08T19:42:00.000Z' },
+// ];
 
 export default function UserManagement() {
-  const [users] = useState(MOCK_USERS);
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  async function getUser(){
+    const { data, error } = await supabase
+        .from('users')
+        .select()
+
+       
+
+    if(!error){
+      setUsers(data)
+    }
+  }
+
+  useEffect(()=>{
+    getUser()
+  },[])
 
   // Helper to format MongoDB ISO Date string safely
   const formatMongoDate = (isoString) => {
@@ -30,11 +47,7 @@ export default function UserManagement() {
   };
 
   // Filter users based on search string
-  const filteredUsers = users.filter(user => 
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.phone.includes(searchTerm)
-  );
+  const filteredUsers = users.filter(user =>  true);
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 p-4 md:p-8">
@@ -74,8 +87,8 @@ export default function UserManagement() {
                 <thead>
                   <tr className="bg-slate-800/50 border-b border-slate-700 text-xs font-semibold text-slate-400 uppercase tracking-wider">
                     <th className="px-6 py-4">User Code</th>
-                    <th className="px-6 py-4">Email Address</th>
-                    <th className="px-6 py-4 hidden sm:table-cell">Phone</th>
+                    <th className="px-6 py-4">Username</th>
+                    <th className="px-6 py-4 hidden sm:table-cell">Password</th>
                     <th className="px-6 py-4 hidden md:table-cell">Created At</th>
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
@@ -88,16 +101,16 @@ export default function UserManagement() {
                         className={`hover:bg-slate-750/40 transition-colors ${selectedUser?.id === user.id ? 'bg-blue-600/10' : ''}`}
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-blue-400 font-medium">
-                          {user.code}
+                          {user.code && JSON.parse(user.code).join("")}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-medium">
-                          {user.email}
+                          {user.username}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300 hidden sm:table-cell">
-                          {user.phone}
+                          {user?.password}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">
-                          {formatMongoDate(user.createdAt)}
+                          {user.created_at}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                           <button
@@ -156,19 +169,19 @@ export default function UserManagement() {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                    Email Address
+                    Username
                   </label>
                   <div className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-white select-all">
-                    {selectedUser.email}
+                    {selectedUser.username}
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
-                    Phone Number
+                    Password
                   </label>
                   <div className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-200">
-                    {selectedUser.phone}
+                    {selectedUser.password}
                   </div>
                 </div>
 

