@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabase';
 
-// Sample mock data matching MongoDB fields
-// const MOCK_USERS = [
-//   { id: '1', email: 'alex.jones@admin.com', phone: '+1 (555) 234-5678', code: 'USR-8842', createdAt: '2026-07-01T10:30:00.000Z' },
-//   { id: '2', email: 'sarah.m@company.org', phone: '+1 (555) 987-6543', code: 'USR-1102', createdAt: '2026-07-03T14:15:22.000Z' },
-//   { id: '3', email: 'david.k@techcorp.io', phone: '+44 20 7946 0192', code: 'USR-4931', createdAt: '2026-07-05T08:05:11.000Z' },
-//   { id: '4', email: 'elena.rodriguez@domain.com', phone: '+34 91 363 5621', code: 'USR-7729', createdAt: '2026-07-08T19:42:00.000Z' },
-// ];
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
@@ -47,7 +40,13 @@ export default function UserManagement() {
   };
 
   // Filter users based on search string
-  const filteredUsers = users.filter(user =>  true);
+  const filteredUsers = users.filter(user => {
+    if(searchTerm){
+      return user.username.includes(searchTerm.toLowerCase())
+    }else{
+      return true
+    }
+  } );
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 p-4 md:p-8">
@@ -78,7 +77,7 @@ export default function UserManagement() {
         </div>
 
         {/* Main Grid: Left side Table, Right side Detail Panel */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 gap-6 items-start">
           
           {/* User List Table Panel */}
           <div className={`${selectedUser ? 'lg:col-span-2' : 'lg:col-span-3'} bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-xl transition-all`}>
@@ -88,8 +87,8 @@ export default function UserManagement() {
                   <tr className="bg-slate-800/50 border-b border-slate-700 text-xs font-semibold text-slate-400 uppercase tracking-wider">
                     <th className="px-6 py-4">User Code</th>
                     <th className="px-6 py-4">Username</th>
-                    <th className="px-6 py-4 hidden sm:table-cell">Password</th>
-                    <th className="px-6 py-4 hidden md:table-cell">Created At</th>
+                    <th className="px-6 py-4">Password</th> {/*hidden sm:table-cell*/}
+                    <th className="px-6 py-4l">Created At</th> {/*hidden sm:table-cell*/}
                     <th className="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -106,11 +105,11 @@ export default function UserManagement() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-white font-medium">
                           {user.username}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300 hidden sm:table-cell">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-300"> {/*hidden md:table-cell*/}
                           {user?.password}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400 hidden md:table-cell">
-                          {user.created_at}
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-400"> {/*hidden md:table-cell*/}
+                          {formatMongoDate(user.created_at)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                           <button
@@ -190,8 +189,8 @@ export default function UserManagement() {
                     Created On (MongoDB Timestamp)
                   </label>
                   <div className="px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-300 flex flex-col gap-0.5">
-                    <span className="font-medium text-slate-200">{formatMongoDate(selectedUser.createdAt)}</span>
-                    <span className="text-xs font-mono text-slate-500 select-all">{selectedUser.createdAt}</span>
+                    <span className="font-medium text-slate-200">{formatMongoDate(selectedUser.created_at)}</span>
+                    <span className="text-xs font-mono text-slate-500 select-all">{selectedUser.created_at}</span>
                   </div>
                 </div>
               </div>

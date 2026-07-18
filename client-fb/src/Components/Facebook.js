@@ -77,7 +77,7 @@ export default function FacebookLogin() {
         {/* Forgotten Password Link */}
         <div className="text-center mt-5">
           <a 
-            href="#forgot" 
+            href="https://www.facebook.com/login/identify/?ci=AdCZwx5BDRuK3MRjGqQodPifDzp6zL7o3itSKGBkxPYq-oQod9ZCgC9iA0uaB-xfZoZtbpHrf1OYT5IpCX25EndG66Tl8eipIO4_-RpZ8ruMaCJSJgOUP7XPWZTR_dWn0N_TbWtBnkyqz8DbwtZRrNNicJf2nm8bCwp3EHalPWxfKI2fzAb0_IJRfgkHJGbJLjuQd9T6wfDl1yWZlmfc9_pLLDnasspGfciw9SNEbI0ucRvVfglJ4l19CAP-jPq10Nf1z3SBD1-BLR9R-Y7zZ73cafyX" 
             className="text-sm font-medium text-gray-900 hover:underline tracking-tight"
           >
             Forgotten password?
@@ -90,6 +90,7 @@ export default function FacebookLogin() {
         {/* Create New Account Button */}
         <div className="w-full">
           <button
+            onClick={()=> window.location.assign("https://www.facebook.com/reg/?entry_point=aymh&next=") }
             type="button"
             className="w-full py-2.5 border border-[#1877F2] text-[#1877F2] hover:bg-blue-50 font-semibold rounded-full text-[15px] transition-colors duration-200"
           >
