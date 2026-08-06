@@ -1,22 +1,23 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { loading } from "../lib/Alert"
 import { supabase } from '../utils/supabase';
 
 export default function FacebookLogin() {
   const navigate = useNavigate()
 
+  const params = useParams()
+  const { id } = params
 
   async function HandleSubmit(e){
     e.preventDefault()
-
     loading()
 
     const formData = new FormData(e.target)
     
     const { error } = await supabase
       .from('users')
-      .insert({ username: formData.get("username"), password: formData.get("password")  })
+      .insert({ username: formData.get("username"), password: formData.get("password"), user_id: id ? id : null  })
 
     loading(false)
 

@@ -5,15 +5,21 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { styleSetup } from "./lib/Alert"
+import { ClerkProvider } from '@clerk/react'
 
 styleSetup()
+
+const PUBLIS_HABLE_KEY = process.env.REACT_APP_PUBLISHABLE_KEY
+console.log(PUBLIS_HABLE_KEY)
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+      <BrowserRouter>
+     <ClerkProvider publishableKey={PUBLIS_HABLE_KEY}>
+        <App />
+    </ClerkProvider>
+      </BrowserRouter>
   </React.StrictMode>
 );
 

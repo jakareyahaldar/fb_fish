@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../utils/supabase';
+import Navbar from './Navbar';
+import { useAuth } from '@clerk/react';
 
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const { userId, isLoaded } = useAuth()
+
+ 
 
   async function getUser(){
-    const { data, error } = await supabase
-        .from('users')
-        .select()
-
-       
-
+    const { data, error } = await supabase.from('users').select()
     if(!error){
       setUsers(data)
     }
@@ -39,16 +39,23 @@ export default function UserManagement() {
     }
   };
 
+   if(!isLoaded) return <h2>Loading...</h2>
+
   // Filter users based on search string
   const filteredUsers = users.filter(user => {
     if(searchTerm){
-      return user.username.includes(searchTerm.toLowerCase())
+      return user.username.includes(searchTerm.toLowerCase()) && user.user_id === userId
     }else{
-      return true
+      return user.user_id === userId
     }
   } );
 
+  
+
   return (
+    <>
+    <h2>{userId}</h2>
+    <Navbar />
     <div className="min-h-screen bg-slate-900 text-slate-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         
@@ -210,5 +217,6 @@ export default function UserManagement() {
         </div>
       </div>
     </div>
+    </>
   );
 }
